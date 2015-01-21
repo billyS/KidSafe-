@@ -1,6 +1,5 @@
 package com.example.uk.co.kidsafe;
 
-import android.net.Uri;
 import android.provider.BaseColumns;
 
 

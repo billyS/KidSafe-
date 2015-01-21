@@ -4,5 +4,7 @@
     <string name="app_name">uk.co.kidsafe</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="device_location_">Device Location:</string>
+    <string name="title_activity_main">MainActivity</string>
 
 </resources>

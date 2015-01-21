@@ -26,9 +26,9 @@ private Database db = null;
 private Criteria criteria = null;
 int counter = 0;
 
-	
+	@Override
 	public void onCreate() { 
-		
+		Log.i("INFO", "Location Service onCreate() Called");
 		db= new Database();
 		
 	    criteria = new Criteria();
@@ -46,7 +46,7 @@ int counter = 0;
 	@Override
 	public void onLocationChanged(Location location) {
 		
-		Log.i("**************************************", "Location changed");
+		Log.i("INFO", "Location changed");
 	           
         db.insert(String.valueOf(location.getLongitude()), String.valueOf(location.getLatitude()));
         //TODO add time stamp and other location data like post code etc
@@ -57,7 +57,7 @@ int counter = 0;
             List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1); 
             
             text = "My current location is: "+ addresses.get(0).getAddressLine(0); 
-            Log.i("**********************", text);
+            Log.i("INFO", "Addess:" + text);
 
         }catch (Exception e) {
             e.printStackTrace();
@@ -70,24 +70,11 @@ int counter = 0;
 
 
 	@Override
-	public void onStatusChanged(String provider, int status, Bundle extras) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
+	public void onStatusChanged(String provider, int status, Bundle extras) {}
 	@Override
-	public void onProviderEnabled(String provider) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
+	public void onProviderEnabled(String provider) {}
 	@Override
-	public void onProviderDisabled(String provider) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void onProviderDisabled(String provider) {}
 
 	public class LocalBinder extends Binder 
     {

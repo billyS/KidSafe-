@@ -1,5 +1,7 @@
 package com.example.uk.co.kidsafe;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -12,11 +14,9 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
 
 public class LocationService extends Service implements LocationListener{
 
@@ -40,32 +40,35 @@ int counter = 0;
 		
 	    locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE); 
 	    
-	    locationManager.requestLocationUpdates(locationManager.getBestProvider(criteria, false), THERTY_SECONDS, 10, this);   
+	    locationManager.requestLocationUpdates(locationManager.getBestProvider(criteria, false), 1000, 1, this);   
 	}
 
 	@Override
 	public void onLocationChanged(Location location) {
 		
 		Log.i("INFO", "Location changed");
-	           
-        db.insert(String.valueOf(location.getLongitude()), String.valueOf(location.getLatitude()));
-        //TODO add time stamp and other location data like post code etc
+		
+		Locale locale = new Locale("UK");
+		Calendar cal = Calendar.getInstance();
+    	cal.getTime();
+    	SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", locale);
         
         final Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());         
         String text = "";
         try {
             List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1); 
             
-            text = "My current location is: "+ addresses.get(0).getAddressLine(0); 
-            Log.i("INFO", "Addess:" + text);
+            text = "My current location is: "+ addresses.get(0).getAddressLine(0);
+            String test = addresses.get(0).getPostalCode();
+            
+            db.insert(String.valueOf(location.getLongitude()), String.valueOf(location.getLatitude()), sdf.format(cal.getTime()), test );
+
+            Log.i("INFO", "Addess: " + text + "\n Post Code: "+ test + "\n Time of fix: " + sdf.format(cal.getTime()));
 
         }catch (Exception e) {
             e.printStackTrace();
             text = "My current location is: " +"Latitude = " + location.getLatitude() + ", Longitude = " + location.getLongitude();  
-        }
-        
-        Toast.makeText( getApplicationContext(), "Location sent to server", Toast.LENGTH_SHORT).show();
-		
+        }	
 	}
 
 
@@ -75,20 +78,17 @@ int counter = 0;
 	public void onProviderEnabled(String provider) {}
 	@Override
 	public void onProviderDisabled(String provider) {}
-
-	public class LocalBinder extends Binder 
-    {
-    	LocationService getService() 
-        {
-            return LocationService.this;
-        }
-    }
 	
-    private final IBinder mBinder = new LocalBinder();
-    
     @Override
     public IBinder onBind(Intent intent) {
     	
-		return mBinder;
-	}
+		return null;
+    }
+    
+    @Override
+    public void onDestroy(){
+    	super.onDestroy();
+        Log.i("STOP_SERVICE", "DONE");
+        locationManager.removeUpdates(this); 
+    }
 }

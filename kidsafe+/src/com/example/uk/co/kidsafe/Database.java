@@ -16,12 +16,13 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
 import android.os.AsyncTask;
-
+import android.os.Handler;
+import android.content.Intent;
 import android.database.CursorJoiner.Result;
 import android.util.Log;
 
  
-public class Database extends AsyncTask<String, Void, Result>{
+public class Database{
 	
 	InputStream is=null;
 	String result=null;
@@ -33,50 +34,58 @@ public class Database extends AsyncTask<String, Void, Result>{
     }
     
     
-    protected void insert(String longitude, String latitude)
+    public void insert(String longitude, String latitude, String timeStamp, String postCode)
     {
-    	ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
- 
+    	final Handler h = new Handler();
+    	
+    	final ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		 
     	nameValuePairs.add(new BasicNameValuePair("longitude",longitude));
     	nameValuePairs.add(new BasicNameValuePair("latitude",latitude));
+    	nameValuePairs.add(new BasicNameValuePair("timeStamp",timeStamp));
+    	nameValuePairs.add(new BasicNameValuePair("postCode",postCode));
     	
-    	try {
-				HttpClient httpclient = new DefaultHttpClient();
-		        HttpPost httppost = new HttpPost("http://10.0.2.2:8888/postData.php");
-		        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-		        HttpResponse response = httpclient.execute(httppost); 
-		        HttpEntity entity = response.getEntity();
-		        is = entity.getContent();
-		        Log.i("INFO", "pass 1 connection success ");
-    	}catch(Exception e) {
-        	Log.e("Fail 1", e.toString());
-    	}     
-        
-        try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is,"iso-8859-1"),8);
-            StringBuilder sb = new StringBuilder();
-            while ((line = reader.readLine()) != null) {
-            	Log.e("......", line);
-                sb.append(line + "\n");
-            }
-            
-            is.close();
-            result = sb.toString();
-            Log.e("INFO", "pass 2 connection success ");
-        }catch(Exception e) {
-            Log.e("Fail 2", e.toString());
-        }     
-       
-        try {
-            JSONObject json_data = new JSONObject(result);
-            code=(json_data.getInt("code"));
-        } catch(Exception e) {
-            Log.e("Fail 3", e.toString());
-        }
+    	Runnable runnable = new Runnable() {
+			public void run() {
+		    	try {
+						HttpClient httpclient = new DefaultHttpClient();
+				        //HttpPost httppost = new HttpPost("http://10.0.2.2:8888/postData.php");
+				        //this one is for my home router 
+				        //HttpPost httppost = new HttpPost("http://89.243.62.195:8888/postData.php");
+				        HttpPost httppost = new HttpPost("http://itsuite.it.brighton.ac.uk/ws52/postData.php");
+
+				        
+				        
+				        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+				        HttpResponse response = httpclient.execute(httppost);
+				        HttpEntity entity = response.getEntity();
+				        is = entity.getContent();
+				        
+				        Log.i("INFO", "pass 1 connection success ");
+				        
+				        BufferedReader reader = new BufferedReader(new InputStreamReader(is,"iso-8859-1"),8);
+		            	StringBuilder sb = new StringBuilder();
+		            	while ((line = reader.readLine()) != null) {
+		            		Log.e("......", line);
+		            		sb.append(line + "\n");
+		            	}
+		            	
+		            	JSONObject json_data = new JSONObject(result);
+		            	code=(json_data.getInt("code"));
+			        
+		            	is.close();
+		            	result = sb.toString();
+		            	Log.e("INFO", "pass 2 connection success ");
+		            
+		    	}catch(Exception e) {
+		        	Log.e("Fail 1", e.toString());
+		    	}     
+			}
+		};
+		new Thread(runnable).start();	
     }
     
-    protected void select(String id)
-    {
+    public void select(String id) {
     	ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
  
     	nameValuePairs.add(new BasicNameValuePair("id",id));
@@ -89,35 +98,27 @@ public class Database extends AsyncTask<String, Void, Result>{
 	        HttpEntity entity = response.getEntity();
 	        is = entity.getContent();
 	        Log.e("INFO", "pass 1 connection success ");
+	        
+	        BufferedReader reader = new BufferedReader (new InputStreamReader(is,"iso-8859-1"),8);
+        	StringBuilder sb = new StringBuilder();
+        	while ((line = reader.readLine()) != null) {
+        		sb.append(line + "\n");
+        	}
+        	
+        	is.close();
+        	result = sb.toString();
+        	Log.e("INFO", "pass 2 connection success ");
+        
+        	JSONObject json_data = new JSONObject(result);
+        	String name=(json_data.getString("name"));
+        
 	    }catch(Exception e) {
         	Log.e("Fail 1", e.toString());
 	    }     
-        
-        try {
-         		BufferedReader reader = new BufferedReader (new InputStreamReader(is,"iso-8859-1"),8);
-            	StringBuilder sb = new StringBuilder();
-            	while ((line = reader.readLine()) != null) {
-            		sb.append(line + "\n");
-            	}
-            	
-            	is.close();
-            	result = sb.toString();
-	        Log.e("INFO", "pass 2 connection success ");
-        }catch(Exception e) {
-        	Log.e("Fail 2", e.toString());
-        }     
-       
-        try {
-        	JSONObject json_data = new JSONObject(result);
-        	String name=(json_data.getString("name"));
-    	}catch(Exception e) {
-        	Log.e("Fail 3", e.toString());
-        	
-    	}
     }
 
 
-	@Override
+	/*@Override
 	protected Result doInBackground(String... url) {
 		Log.i("****************", url.toString());
 		Log.i("****************", url[0]);
@@ -130,5 +131,5 @@ public class Database extends AsyncTask<String, Void, Result>{
 			select(url[1]);
 		}
 		return null;
-	}
+	}*/
 }

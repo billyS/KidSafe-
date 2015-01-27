@@ -2151,10 +2151,12 @@ containing a value of this type.
         public static final int abc_search_view=0x7f030015;
         public static final int abc_simple_dropdown_hint=0x7f030016;
         public static final int activity_main=0x7f030017;
-        public static final int support_simple_spinner_dropdown_item=0x7f030018;
+        public static final int activity_main_activity=0x7f030018;
+        public static final int support_simple_spinner_dropdown_item=0x7f030019;
     }
     public static final class menu {
         public static final int main=0x7f0c0000;
+        public static final int main_activity2=0x7f0c0001;
     }
     public static final class string {
         /**  Content description for the action bar "home" affordance. [CHAR LIMIT=NONE] 
@@ -2323,6 +2325,7 @@ containing a value of this type.
         public static final int store_picture_message=0x7f0a0011;
         public static final int store_picture_title=0x7f0a0010;
         public static final int title_activity_main=0x7f0a0037;
+        public static final int title_activity_main_activity2=0x7f0a0038;
         /**  Text on a placeholder buy button when Google Play services is not
          available or up-to-date 
          */

@@ -34,16 +34,13 @@ public class Database{
     }
     
     
-    public void insert(String longitude, String latitude, String timeStamp, String postCode)
-    {
-    	final Handler h = new Handler();
-    	
+    public void insert(String longitude, String latitude, String timeStamp)
+    {	
     	final ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 		 
     	nameValuePairs.add(new BasicNameValuePair("longitude",longitude));
     	nameValuePairs.add(new BasicNameValuePair("latitude",latitude));
     	nameValuePairs.add(new BasicNameValuePair("timeStamp",timeStamp));
-    	nameValuePairs.add(new BasicNameValuePair("postCode",postCode));
     	
     	Runnable runnable = new Runnable() {
 			public void run() {
@@ -53,8 +50,6 @@ public class Database{
 				        //this one is for my home router 
 				        //HttpPost httppost = new HttpPost("http://89.243.62.195:8888/postData.php");
 				        HttpPost httppost = new HttpPost("http://itsuite.it.brighton.ac.uk/ws52/postData.php");
-
-				        
 				        
 				        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 				        HttpResponse response = httpclient.execute(httppost);
@@ -84,52 +79,4 @@ public class Database{
 		};
 		new Thread(runnable).start();	
     }
-    
-    public void select(String id) {
-    	ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
- 
-    	nameValuePairs.add(new BasicNameValuePair("id",id));
-    	
-    	try {
-		    HttpClient httpclient = new DefaultHttpClient();
-	        HttpPost httppost = new HttpPost("http://10.0.2.2:8888/getData.php");
-	        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-	        HttpResponse response = httpclient.execute(httppost); 
-	        HttpEntity entity = response.getEntity();
-	        is = entity.getContent();
-	        Log.e("INFO", "pass 1 connection success ");
-	        
-	        BufferedReader reader = new BufferedReader (new InputStreamReader(is,"iso-8859-1"),8);
-        	StringBuilder sb = new StringBuilder();
-        	while ((line = reader.readLine()) != null) {
-        		sb.append(line + "\n");
-        	}
-        	
-        	is.close();
-        	result = sb.toString();
-        	Log.e("INFO", "pass 2 connection success ");
-        
-        	JSONObject json_data = new JSONObject(result);
-        	String name=(json_data.getString("name"));
-        
-	    }catch(Exception e) {
-        	Log.e("Fail 1", e.toString());
-	    }     
-    }
-
-
-	/*@Override
-	protected Result doInBackground(String... url) {
-		Log.i("****************", url.toString());
-		Log.i("****************", url[0]);
-		Log.i("****************", url[1]);
-		Log.i("****************", url[2]);
-		
-		if(url[0].equals("insert")) { 
-			insert(url[1],url[2]);
-		}else {
-			select(url[1]);
-		}
-		return null;
-	}*/
 }

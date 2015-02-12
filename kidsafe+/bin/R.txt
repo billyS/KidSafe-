@@ -536,7 +536,6 @@ int layout activity_main 0x7f030017
 int layout activity_main_activity 0x7f030018
 int layout support_simple_spinner_dropdown_item 0x7f030019
 int menu main 0x7f0c0000
-int menu main_activity2 0x7f0c0001
 int string abc_action_bar_home_description 0x7f0a0001
 int string abc_action_bar_home_description_format 0x7f0a0005
 int string abc_action_bar_home_subtitle_description_format 0x7f0a0006

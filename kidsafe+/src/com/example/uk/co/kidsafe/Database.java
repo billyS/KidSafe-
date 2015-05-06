@@ -28,7 +28,6 @@ public class Database{
 	String result=null;
 	String line=null;
 	int code;
- 
     public Database(){ 
     	
     }
@@ -46,11 +45,7 @@ public class Database{
 			public void run() {
 		    	try {
 						HttpClient httpclient = new DefaultHttpClient();
-				        //HttpPost httppost = new HttpPost("http://10.0.2.2:8888/postData.php");
-				        //this one is for my home router 
-				        //HttpPost httppost = new HttpPost("http://89.243.62.195:8888/postData.php");
 				        HttpPost httppost = new HttpPost("http://itsuite.it.brighton.ac.uk/ws52/postData.php");
-				        
 				        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 				        HttpResponse response = httpclient.execute(httppost);
 				        HttpEntity entity = response.getEntity();
@@ -66,9 +61,7 @@ public class Database{
 		            	}
 		            	
 		            	JSONObject json_data = new JSONObject(result);
-		            	code=(json_data.getInt("code"));
-			        
-		            	is.close();
+		                is.close();
 		            	result = sb.toString();
 		            	Log.e("INFO", "pass 2 connection success ");
 		            

@@ -5,8 +5,8 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="12"
-        android:targetSdkVersion="19" />
+        android:minSdkVersion="16"
+        android:targetSdkVersion="21" />
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -14,6 +14,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -34,7 +35,15 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-
+        
+        <receiver android:name="com.example.uk.co.kidsafe.ProximityIntentReceiver"
+              android:exported="false"
+              android:enabled="true" >
+        	<intent-filter>
+            	<action android:name="com.example.uk.co.kidsafe.ProximityAlert" />
+        	</intent-filter>
+		</receiver> 
+        
         <service
             android:name=".LocationService"
             android:exported="false" >

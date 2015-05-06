@@ -23,12 +23,18 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.google.android.gms.location.Geofence;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.wearable.NodeApi.GetLocalNodeResult;
 
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
@@ -38,20 +44,19 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.provider.SyncStateContract.Constants;
 import android.util.Log;
 
 public class LocationService extends Service implements LocationListener{
 
-private static final int THERTY_SECONDS = 1000 * 30;
-private LocationManager locationManager;
-private Database db = null;
-private Criteria criteria = null;
-private String result= null;
-private String line = null;
-private JSONArray locations = null;
-private InputStream is = null;
-
-private static final String PROX_ALERT_INTENT = "com.example.uk.co.kidsafe.android.lbs.ProximityAlert";
+private static final int THERTY_SECONDS         = 1000 * 30;
+private LocationManager locationManager         = null;
+private Database db                             = null;
+private Criteria criteria                       = null;
+private String result                           = null;
+private String line                             = null;
+private JSONArray locations                     = null;
+private InputStream is                          = null;
 private static final long PROX_ALERT_EXPIRATION = -1;
 
 	@Override
@@ -59,10 +64,9 @@ private static final long PROX_ALERT_EXPIRATION = -1;
 		
 		Log.i("INFO", "Location Service onCreate() Called");
 		
-		db= new Database();
-		getLocations();
+		db = new Database();
+		
 	    criteria = new Criteria();
-	    
 	    criteria.setAccuracy(Criteria.ACCURACY_FINE);
 	    criteria.setAltitudeRequired(false);
 	    criteria.setBearingRequired(false);
@@ -70,10 +74,8 @@ private static final long PROX_ALERT_EXPIRATION = -1;
 	    criteria.setPowerRequirement(Criteria.POWER_LOW);
 		
 	    locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE); 
-	    
-	    locationManager.requestLocationUpdates(locationManager.getBestProvider(criteria, false), THERTY_SECONDS, 10, this);
-	    
-	    
+	    locationManager.requestLocationUpdates(locationManager.getBestProvider(criteria, false), THERTY_SECONDS, 1, this);  
+	    getRestrictedAreas();
 	}
 
 	@Override
@@ -97,7 +99,9 @@ private static final long PROX_ALERT_EXPIRATION = -1;
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {}
 	@Override
-	public void onProviderEnabled(String provider) {}
+	public void onProviderEnabled(String provider) {
+		getRestrictedAreas();
+	}
 	@Override
 	public void onProviderDisabled(String provider) {}
 	
@@ -116,34 +120,25 @@ private static final long PROX_ALERT_EXPIRATION = -1;
     
 private void addProximityAlert(double latitude, double longitude, int radius) {
 		
-        Intent intent = new Intent(PROX_ALERT_INTENT);
-        PendingIntent proximityIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+        Intent intent = new Intent(getString(R.string.proxy_alert_intent));
+        PendingIntent proximityIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
+        IntentFilter filter = new IntentFilter(getString(R.string.proxy_alert_intent));  
+        registerReceiver(new ProximityIntentReceiver(), filter);
+        locationManager.addProximityAlert( latitude, longitude, radius, PROX_ALERT_EXPIRATION, proximityIntent);
         
-        locationManager.addProximityAlert(
-    		latitude, 						// the latitude of the central point of the alert region
-    		longitude, 						// the longitude of the central point of the alert region
-    		radius, 						// the radius of the central point of the alert region, in meters
-    		PROX_ALERT_EXPIRATION, 			
-    		proximityIntent 				
-       );
         
-       IntentFilter filter = new IntentFilter(PROX_ALERT_INTENT);  
-       registerReceiver(new ProximityIntentReceiver(), filter);
 	}
 
-public void getLocations(){
-	
+public void getRestrictedAreas(){
+	//FIXME need to poll the GeoFence table for updates
 	 new AsyncTask<String, Integer, String>() {
 		 
 		 @Override
            protected String doInBackground(String... params) {
                try {
-               	
-			        //HttpPost httppost = new HttpPost("http://10.0.2.2:8888/postData.php");
-			        //this one is for my home router 
-			        //HttpPost httppost = new HttpPost("http://89.243.62.195:8888/postData.php");
+               		//Getting all the restricted areas
                			HttpClient httpclient = new DefaultHttpClient();
-				        HttpPost httppost = new HttpPost("http://itsuite.it.brighton.ac.uk/ws52/getGeofence.php");
+				        HttpPost httppost = new HttpPost(getString(R.string.get_geofence_url));
 				        HttpResponse response = httpclient.execute(httppost);
 				        HttpEntity entity = response.getEntity();
 				        is = entity.getContent();
@@ -154,7 +149,6 @@ public void getLocations(){
 		            	StringBuilder sb = new StringBuilder();
 		            	
 		            	while ((line = reader.readLine()) != null) {
-		            		//Log.i("INFO", "line read from get locations responce: " +line);
 		            		sb.append(line + "\n");
 		            	}
 		            	
@@ -170,6 +164,7 @@ public void getLocations(){
 		 
 		 @Override 
 		 protected void onPostExecute(String result) {
+			 
 			 Log.i("INFO","result passed to postExecute: "+ result);
 			 try {
 				locations = new JSONArray(result);
@@ -179,14 +174,20 @@ public void getLocations(){
 				ArrayList<String> radius    = new ArrayList<String>();
 				
 				for(int i = 0; i < locations.length(); i++) {
+					
 					jsonObj 	 = locations.getJSONObject(i);
 					Log.i("INFO","json passed to postExecute: "+ jsonObj);
+					
 					longitude.add((String) jsonObj.get("geo_long"));
 					latitude.add((String) jsonObj.getString("geo_lat_name"));
 					radius.add((String) jsonObj.getString("geo_radius"));
+					
 					Log.i("INFO","Location Service got Geofence locations");
-					Log.i("INFO", jsonObj.get("geo_long") + " " + jsonObj.getString("geo_lat_name") + " " + jsonObj.getString("geo_radius"));
+					//Log.i("INFO", jsonObj.get("geo_long") + " " + jsonObj.getString("geo_lat_name") + " " + jsonObj.getString("geo_radius"));
 					addProximityAlert(Double.valueOf(latitude.get(i)), Double.valueOf(longitude.get(i)), Integer.valueOf(radius.get(i)));
+					Log.i("INFO", "Added: "+ jsonObj.get("geo_long") + "\n" 
+								+ jsonObj.getString("geo_lat_name") + " \n" 
+							    + jsonObj.getString("geo_radius") +" to proximity alert");
 				}
 				
 			} catch (JSONException e) {
@@ -196,8 +197,6 @@ public void getLocations(){
 		 };
 		 
        }.execute(null, null, null);
-       
-       
-	
+
 	}
 }

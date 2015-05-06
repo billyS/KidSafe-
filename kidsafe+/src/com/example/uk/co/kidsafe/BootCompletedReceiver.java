@@ -12,7 +12,7 @@ public class BootCompletedReceiver extends BroadcastReceiver {
     //starting service when device boots
     @Override
     public void onReceive(Context context, Intent arg1) {
-        Log.w(TAG, "Starting Location Service...");
+        Log.i(TAG, "Starting Location Service...");
         context.startService(new Intent(context, LocationService.class));
     }
 }

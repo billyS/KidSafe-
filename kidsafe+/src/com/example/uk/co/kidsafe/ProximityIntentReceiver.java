@@ -33,21 +33,21 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
 	
 	@Override
 	public void onReceive(Context context, Intent intent) {
-//testing notifications on andriod wear
+              //testing notifications on andriod wear
 
-NotificationCompat.Builder notificationBuilder =
-        new NotificationCompat.Builder(this)
-        .setSmallIcon(R.drawable.ic_event)
-        .setContentTitle(eventTitle)
-        .setContentText(eventLocation)
-        .setContentIntent(viewPendingIntent);
+                NotificationCompat.Builder notificationBuilder =
+                new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.ic_event)
+                .setContentTitle(eventTitle)
+                .setContentText(eventLocation)
+                .setContentIntent(viewPendingIntent);
 
-// Get an instance of the NotificationManager service
-NotificationManagerCompat notificationManager =
-        NotificationManagerCompat.from(this);
+                 // Get an instance of the NotificationManager service.   
+                NotificationManagerCompat notificationManager =
+                    NotificationManagerCompat.from(this);
 
-// Build the notification and issues it with notification manager.
-notificationManager.notify(notificationId, notificationBuilder.build());
+                // Build the notification and issues it with notification manager.
+                notificationManager.notify(notificationId, notificationBuilder.build());
 		//proximity alert detected
 		String key = LocationManager.KEY_PROXIMITY_ENTERING;
 		Boolean entering = intent.getBooleanExtra(key, false);

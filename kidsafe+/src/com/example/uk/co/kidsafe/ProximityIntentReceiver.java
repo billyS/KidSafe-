@@ -3,24 +3,21 @@ package com.example.uk.co.kidsafe;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.HttpURLConnection;
 import java.net.Socket;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.LocationManager;
 import android.os.AsyncTask;
-import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationCompat.WearableExtender;
 import android.util.Log;
 
 public class ProximityIntentReceiver extends BroadcastReceiver {
@@ -33,36 +30,23 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
 	
 	@Override
 	public void onReceive(Context context, Intent intent) {
-              //testing notifications on andriod wear
-
-                NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.ic_event)
-                .setContentTitle(eventTitle)
-                .setContentText(eventLocation)
-                .setContentIntent(viewPendingIntent);
-
-                 // Get an instance of the NotificationManager service.   
-                NotificationManagerCompat notificationManager =
-                    NotificationManagerCompat.from(this);
-
-                // Build the notification and issues it with notification manager.
-                notificationManager.notify(notificationId, notificationBuilder.build());
 		//proximity alert detected
 		String key = LocationManager.KEY_PROXIMITY_ENTERING;
 		Boolean entering = intent.getBooleanExtra(key, false);
 		this.context = context;
 		 Log.i("INFO", "Proximity Alert Broadcast Reciever Registered");
 		if (entering) {
-			NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE); 
-			Notification noti = new Notification.Builder(context)
+			    
+			 NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+			 Notification noti = new NotificationCompat.Builder(context)
 	        .setContentTitle("Proximity Alert!: ")
 	        .setContentText("You are entering a restricted area")
 	        .setWhen(System.currentTimeMillis())
 	        .setDefaults(Notification.DEFAULT_VIBRATE)
 	        .setDefaults(Notification.DEFAULT_LIGHTS)
 	        .setLights(Color.WHITE, 1500, 1500)
-	        .setSmallIcon(R.drawable.ic_plusone_standard_off_client)
+	        .setSmallIcon(R.drawable.kidsafe)
+	        .setAutoCancel(true)
 	        .build();
 		
 			notificationManager.notify(NOTIFICATION_ID, noti);
@@ -85,8 +69,8 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
 	            protected String doInBackground(Void... params) {
 				 String msg = "";
 	                try {
-	                	//Socket 			 	clientSocket = new Socket("10.0.2.2", 8080);   
-	                	Socket 			 	clientSocket = new Socket("88.107.65.111", 8080);   
+	                	Socket 			 	clientSocket = new Socket("10.0.2.2", 8080);   
+	                	//Socket 			 	clientSocket = new Socket("88.107.65.111", 8080);   
 	            		ObjectOutputStream  outToServer  = new ObjectOutputStream(clientSocket.getOutputStream()); 
 	            		ObjectInputStream   inFromServer = new ObjectInputStream(clientSocket.getInputStream()); 
 	            		StringBuilder 		sb 			 = new StringBuilder();
@@ -116,19 +100,4 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
 	            }
 	        }.execute(null, null, null);   				
 		}
-	
-	private Notification createNotification() {
-		
-		        Notification notification = new Notification();
-		        notification.icon = R.drawable.ic_plusone_standard_off_client;
-		        notification.when = System.currentTimeMillis();
-		        notification.flags |= Notification.FLAG_AUTO_CANCEL;
-		        notification.flags |= Notification.FLAG_SHOW_LIGHTS;
-		        notification.defaults |= Notification.DEFAULT_VIBRATE;
-		        notification.defaults |= Notification.DEFAULT_LIGHTS;
-		        notification.ledARGB = Color.WHITE;
-		        notification.ledOnMS = 1500;
-		        notification.ledOffMS = 1500;
-		        return notification;
-	}
 }

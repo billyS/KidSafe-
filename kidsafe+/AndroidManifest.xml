@@ -22,10 +22,11 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".MainActivity"
+            android:name=".LoginActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -35,19 +36,41 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        
-        <receiver android:name="com.example.uk.co.kidsafe.ProximityIntentReceiver"
-              android:exported="false"
-              android:enabled="true" >
-        	<intent-filter>
-            	<action android:name="com.example.uk.co.kidsafe.ProximityAlert" />
-        	</intent-filter>
-		</receiver> 
-        
+        <receiver
+            android:name=".ProximityIntentReceiver"
+            android:enabled="true"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="com.example.uk.co.kidsafe.ProximityAlert" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".AdminReceiver"
+            android:description="@string/descript"
+            android:label="Administration"
+            android:permission="android.permission.BIND_DEVICE_ADMIN" >
+            <meta-data
+                android:name="android.app.device_admin"
+                android:resource="@xml/deviceadmin" />
+
+            <intent-filter>
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+            </intent-filter>
+        </receiver>
+
         <service
             android:name=".LocationService"
             android:exported="false" >
         </service>
+
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/title_activity_login" >
+        </activity>
+        <activity
+            android:name=".CreateAccountActivity"
+            android:label="@string/title_activity_create_account" >
+        </activity>
     </application>
 
 </manifest>

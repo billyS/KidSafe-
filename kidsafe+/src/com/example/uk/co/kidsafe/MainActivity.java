@@ -1,88 +1,67 @@
 package com.example.uk.co.kidsafe;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import android.app.Activity;
+import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
-	private Context context;
+	private ComponentName devAdminReceiver;
+	private DevicePolicyManager dpm;
+	private SharedPreferences pref;
 
 	AtomicInteger msgId = new AtomicInteger();
+	private EditText password = null;
+	private TextView userInfo =null;
+	private TextView userInfo2 =null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
-		context = getApplicationContext();
-
-		Intent serviceIntent = new Intent(context, LocationService.class);
+		
+		Intent serviceIntent = new Intent(MainActivity.this, LocationService.class);
 		// serviceIntent.setPackage("com.example.uk.co.kidsafe");
 		startService(serviceIntent);
-		// finish();//FIXME this just makes the screen blank need to think of
-		// something else
-		android.os.Process.killProcess(android.os.Process.myPid());
-        System.exit(1);
-
+		//android.os.Process.killProcess(android.os.Process.myPid());
+        //System.exit(1);
+		
+		password = (EditText) findViewById(R.id.pass3);
+		userInfo = (TextView) findViewById(R.id.user_info);
+		userInfo.setText(getString(R.string.user_info));
+		userInfo2 = (TextView) findViewById(R.id.user_info2);
+		userInfo2.setText(getString(R.string.user_info2));
 		Button conectToServer = (Button) findViewById(R.id.button1);
 		conectToServer.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				//android.os.Process.killProcess(android.os.Process.myPid());
-                //System.exit(1);
-				/*new AsyncTask<Void, Integer, String>() {
-					@Override
-					protected String doInBackground(Void... params) {
-						String msg = "";
-						try {
-							Socket clientSocket = new Socket("10.0.2.2", 8080);
-							ObjectOutputStream outToServer = new ObjectOutputStream(
-									clientSocket.getOutputStream());
-							ObjectInputStream inFromServer = new ObjectInputStream(
-									clientSocket.getInputStream());
-							StringBuilder sb = new StringBuilder();
-
-							outToServer.writeObject("Proximity Alert");
-
-							while (true) {
-								if (inFromServer.readObject() == null) {
-									break;
-								}
-								sb.append(inFromServer.readObject());
-							}
-							msg = sb.toString();
-
-							Log.i("INFO", msg);
-
-							outToServer.close();// TODO close these in on
-												// destroy method
-							inFromServer.close();
-							clientSocket.close();
-						} catch (IOException ex) {
-							msg = "Error :" + ex.getMessage();
-						} catch (ClassNotFoundException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						return msg;
-					}
-				}.execute(null, null, null);*/
+				String tempPass = password.getText().toString();
+				password.setText("");
+				if(tempPass.equals("")) {
+					Toast.makeText(MainActivity.this, "Please Enter a Password", Toast.LENGTH_SHORT).show();
+				} else {
+					SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+					SharedPreferences.Editor editor = preferences.edit();
+					editor.putString("password",tempPass);
+					editor.apply();
+					enableDiviceAdmin(MainActivity.this);
+				}
+				
 			}
 		});
 	}
@@ -104,6 +83,41 @@ public class MainActivity extends Activity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	private void enableDiviceAdmin(Context aContext) {
+		
+		Context context = aContext;
+		dpm = (DevicePolicyManager)context.getSystemService(Context.DEVICE_POLICY_SERVICE);
+		devAdminReceiver = new ComponentName(context, AdminReceiver.class);
+        if (!dpm.isAdminActive(devAdminReceiver)) {//FIXME add offline preference check capabilities here 
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.FROYO) {
+            	    pref = PreferenceManager.getDefaultSharedPreferences(context);
+            	    SharedPreferences.Editor editor = pref.edit();
+					editor.putString("deviceadmin","active");
+					editor.apply();
+                    Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+                    intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, devAdminReceiver);
+                    intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, context.getString(R.string.security_text));
+                    context.startActivity(intent);
+                    finish();
+            }
+        } 
+	}
+	
+	private void disableDiviceAdmin(Context aContext) {
+		
+		Context context = aContext;
+		dpm = (DevicePolicyManager)context.getSystemService(Context.DEVICE_POLICY_SERVICE);
+		devAdminReceiver = new ComponentName(context, AdminReceiver.class);
+        if (dpm.isAdminActive(devAdminReceiver)) {
+        	pref = PreferenceManager.getDefaultSharedPreferences(context);
+    	    SharedPreferences.Editor editor = pref.edit();
+			editor.putString("deviceadmin","deactivated");
+			editor.apply();
+        	dpm.removeActiveAdmin(devAdminReceiver);
+        	Toast.makeText(context, "Device Administrator is disabled.", Toast.LENGTH_SHORT).show();
+        } 
 	}
 
 }

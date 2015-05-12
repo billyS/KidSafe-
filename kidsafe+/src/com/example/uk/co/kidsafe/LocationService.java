@@ -31,9 +31,12 @@ import com.google.android.gms.wearable.NodeApi.GetLocalNodeResult;
 
 import android.app.PendingIntent;
 import android.app.Service;
+import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Criteria;
@@ -44,6 +47,8 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.provider.SyncStateContract.Constants;
 import android.util.Log;
 
@@ -58,6 +63,7 @@ private String line                             = null;
 private JSONArray locations                     = null;
 private InputStream is                          = null;
 private static final long PROX_ALERT_EXPIRATION = -1;
+
 
 	@Override
 	public void onCreate() { 

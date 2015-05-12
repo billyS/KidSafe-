@@ -7,15 +7,54 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.uk.co.kidsafe.MainActivity" >
+    
+    <FrameLayout
+    android:id="@+id/framelayout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/white" >
+
+		<ImageView
+		    android:id="@+id/frameImage"
+		    android:layout_width="352dp"
+		    android:layout_height="334dp"
+		    android:clickable="false"
+		    android:src="@drawable/kidsafe" />
+    
+	</FrameLayout>
+    
+    <TextView
+        android:id="@+id/user_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp" />
+
+    <TextView
+        android:id="@+id/user_info2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:layout_below="@+id/user_info"/>
 
     <Button
         android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="110dp"
-        android:layout_marginTop="88dp"
-        android:text="Button" />
-    
+        android:layout_below="@+id/pass"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:text="Start KidSafe+" />
+
+    <EditText
+        android:id="@+id/pass3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/user_info2"
+        android:layout_marginTop="150dp"
+        android:ems="10"
+        android:hint="password"
+        android:inputType="textPassword" >
+
+        <requestFocus />
+    </EditText>
+
 </RelativeLayout>

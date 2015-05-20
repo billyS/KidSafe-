@@ -24,6 +24,11 @@ public class AdminReceiver extends DeviceAdminReceiver {
 	         startMain.addCategory(Intent.CATEGORY_HOME);
 	         startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 	         context.startActivity(startMain); 
+	         
+	         devAdminReceiver = new ComponentName(context, AdminReceiver.class);
+	         dpm = (DevicePolicyManager)context.getSystemService(Context.DEVICE_POLICY_SERVICE);
+	         dpm.removeActiveAdmin(devAdminReceiver);
+	         
 	         lockPhone(context, secPassword);
 	         Log.i("INFO", "DEVICE ADMINISTRATION DISABLE REQUESTED & LOCKED PHONE");
 		}

@@ -16,10 +16,9 @@
     	
          <ImageView
          android:id="@+id/frameImage"
+         android:contentDescription="@string/logo_description"
          android:layout_width="match_parent"
          android:layout_height="334dp"
-         android:layout_alignParentRight="true"
-         android:layout_alignTop="@+id/framelayout2"
          android:clickable="false"
          android:src="@drawable/kidsafe" />
         
@@ -39,7 +38,7 @@
         android:layout_below="@+id/user_info3"
         android:layout_marginTop="10dp"
         android:ems="10"
-        android:hint="user name"
+        android:hint="@string/login_name_hint"
         android:inputType="text" >
         <requestFocus />
     </EditText>
@@ -50,7 +49,7 @@
 	        android:layout_below="@+id/user_name"
 	        android:layout_marginTop="10dp"
 	        android:ems="10"
-	        android:hint="password"
+	        android:hint="@string/login_password_hint"
 	        android:inputType="textPassword" >
 	</EditText>
 
@@ -60,9 +59,11 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/pass"
         android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
         android:layout_marginRight="15dp"
+        android:layout_marginEnd="15dp"
         android:layout_marginTop="100dp"
-        android:text="Login" />
+        android:text="@string/login_button_txt" />
 
      <Button
          android:id="@+id/button4"
@@ -71,5 +72,6 @@
          android:layout_alignBaseline="@+id/button2"
          android:layout_alignBottom="@+id/button2"
          android:layout_toRightOf="@+id/button2"
-         android:text="Create Account" />
+         android:layout_toEndOf="@+id/button2"
+         android:text="@string/create_account_txt" />
 </RelativeLayout>

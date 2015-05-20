@@ -14,18 +14,34 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 public class LoginActivity extends Activity {
-	private EditText password = null;
-	private EditText username = null;
+	private EditText password 		= null;
+	private EditText username 		= null;
+	private Button createAccount    = null;
+	private Button login 			= null;
+	private String aPassword 		= "";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
 		
+		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
+		aPassword = pref.getString("passwordReset", "");
+		
+		createAccount = (Button) findViewById(R.id.button4);
+		createAccount.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				 Intent startCreateAccount = new Intent(LoginActivity.this,CreateAccountActivity.class);
+				 startActivity(startCreateAccount);
+				
+			}
+		});
+		
 		password = (EditText) findViewById(R.id.pass);
 		username = (EditText) findViewById(R.id.user_name);
 		
-		Button login = (Button) findViewById(R.id.button2);
+		login = (Button) findViewById(R.id.button2);
 		login.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -50,15 +66,7 @@ public class LoginActivity extends Activity {
 			}
 		});
 		
-		Button createAccount = (Button) findViewById(R.id.button4);
-		createAccount.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				 Intent startCreateAccount = new Intent(LoginActivity.this,CreateAccountActivity.class);
-				 startActivity(startCreateAccount);
-				
-			}
-		});
+		validatePassword();
 	}
 
 	@Override
@@ -90,5 +98,12 @@ public class LoginActivity extends Activity {
 			valid = true;
 		}
 		return valid;
+	}
+	
+	private void validatePassword() {
+		if(!aPassword.equals("")) {
+			createAccount.setVisibility(View.INVISIBLE);
+			login.setX(240);	
+		}
 	}
 }

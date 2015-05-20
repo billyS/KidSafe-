@@ -125,7 +125,6 @@ private static final long PROX_ALERT_EXPIRATION = -1;
     }
     
 private void addProximityAlert(double latitude, double longitude, int radius) {
-		
         Intent intent = new Intent(getString(R.string.proxy_alert_intent));
         PendingIntent proximityIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
         IntentFilter filter = new IntentFilter(getString(R.string.proxy_alert_intent));  

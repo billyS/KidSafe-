@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">uk.co.kidsafe</string>
+    <string name="app_name">kidSafe+</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="device_location_">Device Location:</string>
@@ -20,5 +20,18 @@
     <string name="title_activity_login">LoginActivity</string>
     <string name="title_activity_create_account">CreateAccountActivity</string>
     <string name="uni_latlang">50.846407 -0.116863</string>
+    <string name="title_menu_item1" translatable="false">About Us</string>
+    <string name="title_menu_item2">Preferences</string>
+    <string name="title_menu_item3">Exit</string>
+    <string name="about_us">"KidSafe+ is designed for parents who want to ensure they can find their children whenever they need to. 
+        It is not to be used by jealous boyfriends and girlfriend to spy on their partners (although it would work perfectly for that purpose)"</string>
+    <string name="logo_description">KidSafe+ logo</string>
+    <string name="login_name_hint">user name</string>
+    <string name="login_password_hint">password</string>
+    <string name="main_button_txt">Start KidSafe+</string>
+    <string name="login_button_txt">login</string>
+    <string name="account_name_hint">first name</string>
+    <string name="account_name2_hint">last name</string>
+    <string name="create_account_txt">Create Account</string>
 
 </resources>

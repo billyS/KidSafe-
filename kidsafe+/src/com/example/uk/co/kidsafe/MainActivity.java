@@ -57,7 +57,7 @@ public class MainActivity extends Activity {
 				} else {
 					SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
 					SharedPreferences.Editor editor = preferences.edit();
-					editor.putString("password",tempPass);
+					editor.putString("passwordReset",tempPass);
 					editor.apply();
 					enableDiviceAdmin(MainActivity.this);
 				}
@@ -100,9 +100,10 @@ public class MainActivity extends Activity {
                     intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, devAdminReceiver);
                     intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, context.getString(R.string.security_text));
                     context.startActivity(intent);
-                    finish();
+                    
             }
         } 
+        finish();
 	}
 	
 	private void disableDiviceAdmin(Context aContext) {

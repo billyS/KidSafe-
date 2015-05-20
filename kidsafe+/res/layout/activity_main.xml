@@ -16,6 +16,7 @@
 
 		<ImageView
 		    android:id="@+id/frameImage"
+		    android:contentDescription="@string/logo_description"
 		    android:layout_width="352dp"
 		    android:layout_height="334dp"
 		    android:clickable="false"
@@ -39,19 +40,20 @@
         android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/pass"
+        android:layout_below="@+id/pass3"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:text="Start KidSafe+" />
+        android:text="@string/main_button_txt" />
 
     <EditText
         android:id="@+id/pass3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/user_info2"
-        android:layout_marginTop="150dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="200dp"
         android:ems="10"
-        android:hint="password"
+        android:hint="@string/login_password_hint"
         android:inputType="textPassword" >
 
         <requestFocus />

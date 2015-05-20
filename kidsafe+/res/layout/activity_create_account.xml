@@ -12,7 +12,7 @@
         android:id="@+id/user_info4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Create an Account" />
+        android:text="@string/create_account_txt" />
     <EditText
         android:id="@+id/name"
         android:layout_width="match_parent"
@@ -20,7 +20,7 @@
         android:layout_below="@+id/user_info4"
         android:layout_marginTop="10dp"
         android:ems="10"
-        android:hint="user name"
+        android:hint="@string/login_name_hint"
         android:inputType="text" >
         <requestFocus />
     </EditText>
@@ -31,7 +31,7 @@
 	        android:layout_below="@+id/name"
 	        android:layout_marginTop="10dp"
 	        android:ems="10"
-	        android:hint="password"
+	        android:hint="@string/login_password_hint"
 	        android:inputType="textPassword" >
 	</EditText>
     <EditText
@@ -41,7 +41,7 @@
         android:layout_below="@+id/pass2"
         android:layout_marginTop="10dp"
         android:ems="10"
-        android:hint="user name"
+        android:hint="@string/account_name_hint"
         android:inputType="text" >
         <requestFocus />
     </EditText>
@@ -52,7 +52,7 @@
 	        android:layout_below="@+id/user_name2"
 	        android:layout_marginTop="10dp"
 	        android:ems="10"
-	        android:hint="last name"
+	        android:hint="@string/account_name2_hint"
 	        android:inputType="text" >
 	</EditText>
 	<Button
@@ -63,5 +63,5 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:layout_marginTop="100dp"
-        android:text="Create Account" />
+        android:text="@string/create_account_txt" />
 </RelativeLayout>
